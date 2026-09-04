@@ -18,27 +18,40 @@ class Task:
     def rename(self, new_title):
         self.title = new_title
 
-class TaskManager:
+class TaskRepository(ABC):
+    @abstractmethod
+    def add(self, task):
+        pass
+
+    @abstractmethod
+    def get_by_id(self, task_id):
+        pass
+
+    @abstractmethod
+    def list_all(self):
+        pass
+
+    @abstractmethod
+    def update(self, task):
+        pass
+
+class InMemoryTaskRepository(TaskRepository):
     def __init__(self):
         self.tasks = []
 
-    def add_task(self, *args):
-        self.tasks.extend(args)
+    def add(self, task):
+        self.tasks.append(task)
 
-    def list_tasks(self):
-        return self.tasks
-
-    def get_task_by_id(self, task_id):
+    def get_by_id(self, task_id):
         task = next((t for t in self.tasks if t.id == task_id), None)
         return task
+    
+    def list_all(self):
+        return self.tasks
 
-    def complete_task(self, task_id):
-        task = self.get_task_by_id(task_id)
-        task.complete()
-        
-    def delete_task(self, task_id):
-        task = self.get_task_by_id(task_id)
-        del task
+    def update(self, updated_task):
+        task = next((t for t in self.tasks if t.id == updated_task.id), None)
+        task = updated_task
 
 if __name__ == '__main__':
     pass
