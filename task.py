@@ -1,5 +1,5 @@
 from datetime import datetime
-import itertools
+import itertools, json
 
 class Task:
     def __init__(self, id, title):
@@ -19,6 +19,10 @@ class Task:
     def title(self):
         return self.__title
 
+    @property
+    def created_at(self):
+        return self.__created_at
+
     @title.setter
     def title(self, title):
         if not title:
@@ -32,6 +36,23 @@ class Task:
         
         self.__completed = True
 
+    def to_dict(self):
+        return {
+            "id": self.__id,
+            "title": self.__title,
+            "created_at": self.__created_at.isoformat(),
+            "completed": self.__completed,
+        }
+
+    @staticmethod
+    def __datetime_serializer(obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        raise TypeError(f"Type {type(obj)} not serializable")
+
+    def to_json(self, indent:int = None) -> str:
+        return json.dumps(self.__dict__, default=Task.__datetime_serializer, indent=indent)
+
 class TaskManager:
     # Initialize a counter starting at 1
     _id_iter = itertools.count(1)
@@ -41,6 +62,8 @@ class TaskManager:
 
     def create_task(self, title):
         task = Task(next(TaskManager._id_iter), title)
+        if self.get_task_by_id(task.id):
+            raise ValueError("Task ID already exists")
         self.__tasks.append(task)
         return task
 
@@ -54,5 +77,15 @@ class TaskManager:
         task = self.get_task_by_id(task_id)
         self.__tasks.remove(task)
 
-if __name__ == '__main__':
+class JsonTaskRepository:
+    def load_tasks():
+        pass
+
+    def save_tasks(tasks):
+        pass
+
+def test():
     pass
+
+if __name__ == '__main__':
+    test()

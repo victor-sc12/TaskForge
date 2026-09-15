@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Task",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type":"number"
+        },
+        "title": {
+            "type":"string"
+        },
+        "created_at": {
+            "type":"string",
+            "format": "date-time"
+        },
+        "completed": {
+            "type":"boolean"
+        }
+    },
+    "required": ["id", "title", "created_at", "completed"]
+}
